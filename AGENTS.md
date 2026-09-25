@@ -12,7 +12,7 @@ A short, visual list of Claude Code setup tips, plus a plugin that audits other 
 
 - `plugin/`: the `harness-tips` plugin (`/harness-tips:audit` skill, session-start nudge hook)
 - `.claude-plugin/marketplace.json`: makes this repo installable as a plugin marketplace
-- `.claude/skills/update-tips/`: maintenance skill that the weekly routine runs
+- `.claude/skills/update-tips/`: maintenance skill that the daily routine runs
 
 ## Rules
 

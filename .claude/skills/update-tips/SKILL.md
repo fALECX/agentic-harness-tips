@@ -1,12 +1,12 @@
 ---
 name: update-tips
-description: Check the Claude Code changelog for releases newer than the tracked version, add tips worth adding to tips.json, fix tips that went stale, rebuild, and open a PR. Use for the weekly maintenance routine or when asked to update the tips.
+description: Check the Claude Code changelog for releases newer than the tracked version, add tips worth adding to tips.json, fix tips that went stale, rebuild, and open a PR. Use for the daily maintenance routine or when asked to update the tips.
 ---
 
 # Update tips
 
 1. Read `trackedClaudeCode` from `tips.json`.
-2. Fetch `https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md` and take every release newer than the tracked version.
+2. Fetch `https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md` and take every release newer than the tracked version. **This runs daily, so most days there are none** — if the list is empty, stop here and make no PR.
 3. **Candidates** are user-facing features that change how people work beyond the prompt: new slash commands, hook events or hook options, settings, CLI flags, model aliases, automation. **Ignore** bug fixes, managed/enterprise-only settings, provider-specific items (Bedrock, Vertex, Foundry) and internals.
 4. **Stale check:** if a release renames or removes something an existing tip uses, fix or delete that tip.
 5. **Verify before writing.** Confirm each candidate on its page under `https://code.claude.com/docs/en/`. No tip without a snippet or command that the docs back up.
