@@ -13,8 +13,18 @@ description: Audit the current repository against the Agentic Harness Tips list 
    - **already done**: its `done` check passes
    - **not relevant**: say why in a few words
    Cite evidence as `file` + field or line.
-5. **Report.** One table of the tips that fit, highest payoff first: tip, why it fits here, the exact change adapted to this repo (real script names, the formatter it actually uses, correct settings scope). Then one line each for "already done" and "not relevant". Habit tips with no config go in a short "Try this" line.
-6. **Apply only what the user picks.** Merge into existing settings JSON and never overwrite existing hooks, permissions or instructions. Put user-level tips (`~/.claude/...`) at user level, project tips in the project. Check that every JSON file still parses.
+5. **Report, compact.** No tables and no JSON; it must read well in a plain terminal. Use this shape:
+   ```
+   Fits
+    1. stop-gate       TypeScript, no Stop hook yet          → .claude/settings.json
+    2. deny-rules      .env readable, no deny rules          → .claude/settings.json
+   Already done   dev-server, output-style
+   Not relevant   headless (no scripts or CI)
+   Try            /rewind, claude --worktree, /loop
+   Apply which? (e.g. 1,2)
+   ```
+   Plain text, not inside a code block. One line per fitting tip, highest payoff first, reason ≤ 8 words. "Already done", "Not relevant" and "Try" list ids only. Nothing before "Fits" and nothing after "Apply which?".
+6. **Apply only what the user picks.** Adapt each snippet to this repo (real script names, the formatter it actually uses, correct settings scope) and show it before writing. Merge into existing settings JSON and never overwrite existing hooks, permissions or instructions. Put user-level tips (`~/.claude/...`) at user level, project tips in the project. Check that every JSON file still parses.
 7. **Record state.** Write `.claude/harness-tips.json`: `tipsVersion`, `seen` (every tip id you classified), `applied`, `declined`. This file stops the session-start nudge from repeating itself.
 
 ## Unattended (routine) mode

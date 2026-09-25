@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1080px; background: #000; color: #fff;
+         font-family: Consolas, "Courier New", monospace; padding: 90px 64px 90px; }
+  .step { border: 3px solid #fff; padding: 40px 34px; }
+  .n { font-size: 28px; font-weight: 700; margin-right: 20px; }
+  .t { font-size: 42px; font-weight: 700; margin-top: 6px; }
+  .s { font-size: 28px; color: #bbb; margin-top: 16px; line-height: 1.45; }
+  .arrow { text-align: center; font-size: 50px; line-height: 1; padding: 24px 0; color: #fff; }
+  .tag { display: inline-block; font-size: 22px; color: #000; background: #fff; padding: 4px 13px; margin-left: 14px; vertical-align: middle; }
+  .foot { text-align: center; font-size: 32px; margin-top: 76px; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+  <div class="step">
+    <span class="n">1</span><span class="t">Daily routine</span><span class="tag">CLOUD</span>
+    <div class="s">reads the Claude Code changelog → adds new tips</div>
+  </div>
+  <div class="arrow">↓</div>
+  <div class="step">
+    <span class="n">2</span><span class="t">Tips repo</span>
+    <div class="s">23 tips · one line + one snippet each</div>
+  </div>
+  <div class="arrow">↓</div>
+  <div class="step">
+    <span class="n">3</span><span class="t">Session-start hook</span><span class="tag">0 TOKENS</span>
+    <div class="s">"3 new tips since your last check" — just a nudge, no AI call</div>
+  </div>
+  <div class="arrow">↓</div>
+  <div class="step">
+    <span class="n">4</span><span class="t">/audit</span>
+    <div class="s">Claude checks YOUR repo against the list, shows what fits, applies what I pick</div>
+  </div>
+
+  <div class="foot">github.com/fALECX/agentic-harness-tips</div>
+</body>
+</html>
