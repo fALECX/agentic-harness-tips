@@ -1,0 +1,12 @@
+{
+  "name": "agentic-harness-tips",
+  "description": "Claude Code setup tips you can apply to your own repo.",
+  "owner": { "name": "fALECX" },
+  "plugins": [
+    {
+      "name": "harness-tips",
+      "source": "./plugin",
+      "description": "Audit your repo against the tips list and get a nudge when new tips land."
+    }
+  ]
+}

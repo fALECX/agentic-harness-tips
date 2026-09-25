@@ -1,0 +1,545 @@
+{
+  "version": 1,
+  "updated": "2026-09-25",
+  "trackedClaudeCode": "2.1.282",
+  "repo": "fALECX/agentic-harness-tips",
+  "categories": [
+    {
+      "id": "models",
+      "title": "Models & output"
+    },
+    {
+      "id": "hooks",
+      "title": "Hooks & guardrails"
+    },
+    {
+      "id": "context",
+      "title": "Context & instructions"
+    },
+    {
+      "id": "workflow",
+      "title": "Workflow"
+    },
+    {
+      "id": "automation",
+      "title": "Automation"
+    }
+  ],
+  "tips": [
+    {
+      "id": "opusplan",
+      "category": "models",
+      "title": "Plan with Opus, build with Sonnet",
+      "tip": "`/model opusplan` runs Opus in plan mode and Sonnet once you approve. `Shift+Tab` toggles plan mode.",
+      "when": "Multi-file features, refactors, anything you'd sketch first.",
+      "done": "`model` is `opusplan` in any settings file.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /model opusplan",
+          "",
+          "# plan mode   → Opus     reads, thinks, proposes",
+          "# approved    → Sonnet   edits, runs tests",
+          "",
+          "# Shift+Tab until the status bar shows  ⏸ plan mode on"
+        ]
+      },
+      "snippet": {
+        "file": "~/.claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"model\": \"opusplan\"",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "effort",
+      "category": "models",
+      "title": "Dial effort per task",
+      "tip": "Low effort for boilerplate, `xhigh` for nasty bugs. Pin a default per model so you stop thinking about it.",
+      "when": "Cost or speed matters, or you're deep in a hard bug.",
+      "done": "`effortLevel` or `modelSettings.<model>.effortLevel` is set.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /effort low       # renames, formatting, boilerplate",
+          "> /effort high      # everyday feature work",
+          "> /effort xhigh     # race conditions, perf, gnarly bugs",
+          "> /effort auto      # back to the model default"
+        ]
+      },
+      "snippet": {
+        "file": "~/.claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"effortLevel\": \"high\",",
+          "  \"modelSettings\": {",
+          "    \"claude-opus-5-5\": { \"effortLevel\": \"xhigh\" }",
+          "  }",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "role-agents",
+      "category": "models",
+      "title": "Cheap scouts, smart architects",
+      "tip": "Give every subagent the smallest model that does its job. Haiku explores, Sonnet builds and reviews, Opus plans.",
+      "when": "Large repos, long sessions, lots of delegation.",
+      "done": "`.claude/agents/` or `~/.claude/agents/` has agents with `model:` set.",
+      "note": "My set: `scout` → haiku · `implementer`, `reviewer` → sonnet · `architect` → opus.",
+      "snippet": {
+        "file": "~/.claude/agents/scout.md",
+        "lang": "md",
+        "code": [
+          "---",
+          "name: scout",
+          "description: Read-only recon on unfamiliar code. Returns paths + evidence.",
+          "model: haiku",
+          "---",
+          "Inspect files, commands and tests. Never edit. No generic advice."
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "output-style",
+      "category": "models",
+      "title": "Less narration, same work",
+      "tip": "`/output-style concise` puts the result first and drops the play-by-play. Easier to skim after a long run.",
+      "when": "You skim Claude's replies more than you read them.",
+      "done": "`outputStyle` is set in settings.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /output-style concise",
+          "",
+          "# leads with the result, skips the narration",
+          "# full detail is still there when you ask for it"
+        ]
+      },
+      "snippet": {
+        "file": "~/.claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"outputStyle\": \"Concise\"",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "session-brief",
+      "category": "hooks",
+      "title": "Start every session briefed",
+      "tip": "`SessionStart` output lands in Claude's context. Print branch, dirty files and recent commits so it never starts cold.",
+      "when": "Always, in any git repo.",
+      "done": "A `SessionStart` hook prints git state.",
+      "note": "I also use this hook to flag repos that are missing `AGENTS.md`.",
+      "snippet": {
+        "file": ".claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"hooks\": {",
+          "    \"SessionStart\": [{",
+          "      \"matcher\": \"startup|resume|clear|compact\",",
+          "      \"hooks\": [{",
+          "        \"type\": \"command\",",
+          "        \"command\": \"git status -sb && git log --oneline -5\"",
+          "      }]",
+          "    }]",
+          "  }",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "dev-server",
+      "category": "hooks",
+      "title": "Dev server starts itself",
+      "tip": "An async `SessionStart` hook boots `npm run dev` and logs to a file Claude can read when the UI breaks.",
+      "when": "`package.json` has a `dev` script (Vite, Next, Astro, …).",
+      "done": "A `SessionStart` hook runs the dev script.",
+      "note": "Add to `CLAUDE.md`: *Dev server is already running, errors go to `.claude/dev.log`.* Git-ignore the log.",
+      "snippet": {
+        "file": ".claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"hooks\": {",
+          "    \"SessionStart\": [{",
+          "      \"matcher\": \"startup\",",
+          "      \"hooks\": [{",
+          "        \"type\": \"command\",",
+          "        \"command\": \"npm run dev > .claude/dev.log 2>&1\",",
+          "        \"async\": true",
+          "      }]",
+          "    }]",
+          "  }",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "format-on-edit",
+      "category": "hooks",
+      "title": "Every edit comes out formatted",
+      "tip": "`PostToolUse` on `Edit|Write` runs your formatter on the file Claude just touched. Style nits never reach review.",
+      "when": "Prettier, Biome, Ruff, gofmt: any formatter in the repo.",
+      "done": "A `PostToolUse` hook matching `Edit`/`Write` runs a formatter.",
+      "note": "Python: swap in `xargs ruff format`. Needs `jq`.",
+      "snippet": {
+        "file": ".claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"hooks\": {",
+          "    \"PostToolUse\": [{",
+          "      \"matcher\": \"Edit|Write\",",
+          "      \"hooks\": [{",
+          "        \"type\": \"command\",",
+          "        \"command\": \"jq -r .tool_input.file_path | xargs npx prettier -w -u\"",
+          "      }]",
+          "    }]",
+          "  }",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "stop-gate",
+      "category": "hooks",
+      "title": "No “done” until types pass",
+      "tip": "A `Stop` hook runs the type-checker. Exit code 2 hands the errors back and Claude keeps fixing.",
+      "when": "TypeScript, mypy, `cargo check`: any check that runs in under ~30 s.",
+      "done": "A `Stop` hook runs a typecheck or test command.",
+      "note": "Keep it fast. Full test suites belong in CI.",
+      "snippet": {
+        "file": ".claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"hooks\": {",
+          "    \"Stop\": [{",
+          "      \"hooks\": [{",
+          "        \"type\": \"command\",",
+          "        \"command\": \"npx tsc --noEmit >&2 || exit 2\"",
+          "      }]",
+          "    }]",
+          "  }",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "deny-rules",
+      "category": "hooks",
+      "title": "Deny the scary stuff",
+      "tip": "Deny rules beat hoping. Block secrets, force-pushes and `rm -rf`, then run with fewer prompts without sweating.",
+      "when": "Before you turn on auto mode, `acceptEdits` or skip-permissions.",
+      "done": "`permissions.deny` covers `.env` files and force-push.",
+      "snippet": {
+        "file": ".claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"permissions\": {",
+          "    \"deny\": [",
+          "      \"Read(**/.env*)\",",
+          "      \"Bash(git push --force *)\",",
+          "      \"Bash(git push -f *)\",",
+          "      \"Bash(rm -rf *)\"",
+          "    ]",
+          "  }",
+          "}"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "agents-md",
+      "category": "context",
+      "title": "One instruction file for every agent",
+      "tip": "Rules live in `AGENTS.md`, which Codex, Cursor and co. read too. `CLAUDE.md` just imports it, so the copies never drift.",
+      "when": "You or your teammates use more than one coding agent.",
+      "done": "`CLAUDE.md` contains `@AGENTS.md`.",
+      "snippet": {
+        "file": "CLAUDE.md",
+        "lang": "md",
+        "code": [
+          "@AGENTS.md",
+          "",
+          "<!-- Claude-only extras below. Keep it short. -->"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "lean-instructions",
+      "category": "context",
+      "title": "Keep instructions to one screen",
+      "tip": "Root instructions load every session. Keep commands, hard rules and gotchas there, and point to longer docs by path.",
+      "when": "`CLAUDE.md` or `AGENTS.md` is over ~100 lines, or is untouched `/init` output.",
+      "done": "An instruction file exists and is under ~150 lines.",
+      "note": "No file yet? `/init` drafts one. Then cut it in half.",
+      "snippet": {
+        "file": "AGENTS.md",
+        "lang": "md",
+        "code": [
+          "## Commands",
+          "npm run dev · npm test · npm run typecheck",
+          "",
+          "## Rules",
+          "- Server components by default",
+          "- Never edit src/generated/",
+          "",
+          "## Read when relevant",
+          "docs/architecture.md · docs/testing.md"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "context-hygiene",
+      "category": "context",
+      "title": "Guard the context window",
+      "tip": "`/clear` between tasks, `/context` to see what eats tokens, `/btw` for side questions that shouldn't stick.",
+      "when": "Long sessions, or answers getting worse.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /context                          # what fills the window",
+          "> /btw what does 'hydration' mean?  # side question, not kept",
+          "> /compact keep the API decisions   # summarize, keep the gist",
+          "> /clear                            # new task, fresh window"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "skills",
+      "category": "context",
+      "title": "Prompted it twice? Make it a skill",
+      "tip": "Repeated workflows become `.claude/skills/<name>/SKILL.md`. Claude loads it when the description matches, or you run `/<name>`.",
+      "when": "Releases, changelogs, review checklists, deploys.",
+      "done": "`.claude/skills/` has at least one skill.",
+      "snippet": {
+        "file": ".claude/skills/release/SKILL.md",
+        "lang": "md",
+        "code": [
+          "---",
+          "name: release",
+          "description: Cut a release. Use when asked to ship or tag a version.",
+          "---",
+          "1. Run tests and typecheck. Stop on failure.",
+          "2. Bump the version, update CHANGELOG from merged PRs.",
+          "3. Tag, push, print the release URL."
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "worktrees",
+      "category": "workflow",
+      "title": "Parallel sessions, zero collisions",
+      "tip": "`claude --worktree <name>` gives each session its own checkout and branch. Two features at once, no stepping on toes.",
+      "when": "One task is running and the next one is ready.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "terminal",
+        "lang": "shell",
+        "lines": [
+          "$ claude --worktree feature-auth    # terminal 1",
+          "$ claude --worktree fix-checkout    # terminal 2",
+          "",
+          "# own checkout + branch each · repo needs at least one commit"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "rewind",
+      "category": "workflow",
+      "title": "Esc Esc is undo",
+      "tip": "Double-tap `Esc` or run `/rewind` to roll code and conversation back to a checkpoint. Try the risky idea first.",
+      "when": "Experiments, big refactors, “let's just try it”.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "[Esc] [Esc]    → pick a checkpoint",
+          "> /rewind      # same, as a command",
+          "",
+          "# restores Claude's file edits + the conversation",
+          "# not shell side effects (migrations, installs)"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "screenshots",
+      "category": "workflow",
+      "title": "Show, don't describe",
+      "tip": "Paste a screenshot of the broken UI instead of describing it. `Ctrl+V`, or `Alt+V` on Windows.",
+      "when": "Frontend work, CSS bugs, design handoffs.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> [Image #1] the card overflows on mobile. fix it.",
+          "",
+          "# Ctrl+V to paste · Alt+V on Windows · or drag the file in"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "bang",
+      "category": "workflow",
+      "title": "! runs it yourself",
+      "tip": "Start a line with `!` to run a shell command directly. The output lands in context, and no tokens go into deciding to run it.",
+      "when": "You already know the exact command.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> !npm test -- auth",
+          "",
+          "# output goes straight into the conversation",
+          "> fix these"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "code-review",
+      "category": "workflow",
+      "title": "Review before you commit",
+      "tip": "`/code-review` hunts real bugs in the diff, and `--fix` applies them. `/security-review` for auth, payments, uploads.",
+      "when": "Every non-trivial diff.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /code-review              # current diff",
+          "> /code-review high --fix   # broader, then apply",
+          "> /code-review 142          # a PR by number",
+          "> /security-review          # auth, payments, uploads"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "fewer-prompts",
+      "category": "automation",
+      "title": "End permission-prompt fatigue",
+      "tip": "`/fewer-permission-prompts` scans your past sessions and allowlists the read-only commands you always approve.",
+      "when": "You click “Yes” on the same commands every day.",
+      "done": "Project settings have a `permissions.allow` list.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /fewer-permission-prompts",
+          "",
+          "# → .claude/settings.json › permissions.allow",
+          "#   e.g. \"Bash(git diff *)\", \"Bash(npm test *)\""
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "loop",
+      "category": "automation",
+      "title": "Babysit CI with /loop",
+      "tip": "`/loop` reruns a prompt on an interval while the session is open. Leave out the interval and Claude paces itself.",
+      "when": "Waiting on CI, a deploy or a flaky queue.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /loop 5m check CI on this branch, fix failures, push",
+          "> /loop watch the deploy and tell me when it's green"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "routines",
+      "category": "automation",
+      "title": "Routines run while you sleep",
+      "tip": "`/schedule` creates a cloud routine with a cron, GitHub-event or API trigger. It pushes to `claude/` branches and opens PRs.",
+      "when": "Recurring chores: dependency bumps, docs drift, PR review, triage.",
+      "done": "Habit, nothing to detect (routines live in your claude.ai account).",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /schedule every Monday 9am: bump deps, run tests, open a PR",
+          "> /schedule list",
+          "",
+          "# runs in the cloud · manage at claude.ai/code/routines"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "insights",
+      "category": "automation",
+      "title": "Let /insights find your next hook",
+      "tip": "`/insights` builds an HTML report of your recent sessions. Whatever you keep doing by hand is your next hook or skill.",
+      "when": "Once a month, or whenever your setup feels stale.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /insights",
+          "",
+          "# → HTML report of your recent sessions",
+          "# repeated manual steps = hook, skill or routine candidates"
+        ]
+      },
+      "added": "2026-09-25"
+    },
+    {
+      "id": "headless",
+      "category": "automation",
+      "title": "Pipe it: claude -p",
+      "tip": "`claude -p` behaves like any Unix tool. Drop it into scripts, git hooks and CI.",
+      "when": "Anything you'd script: commit messages, log triage, batch edits.",
+      "done": "`claude -p` appears in scripts, git hooks or CI config.",
+      "card": {
+        "title": "terminal",
+        "lang": "shell",
+        "lines": [
+          "$ git diff --staged | claude -p \"write a conventional commit message\"",
+          "$ cat build.log | claude -p \"why did this fail? one line\"",
+          "$ claude -p \"fix the lint errors\" --max-turns 5"
+        ]
+      },
+      "added": "2026-09-25"
+    }
+  ]
+}
