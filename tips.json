@@ -1,7 +1,7 @@
 {
-  "version": 1,
-  "updated": "2026-09-25",
-  "trackedClaudeCode": "2.1.282",
+  "version": 2,
+  "updated": "2026-09-27",
+  "trackedClaudeCode": "2.1.283",
   "repo": "fALECX/agentic-harness-tips",
   "categories": [
     {
@@ -136,6 +136,24 @@
         ]
       },
       "added": "2026-09-25"
+    },
+    {
+      "id": "maxProseWidth",
+      "category": "models",
+      "title": "Tame wide-terminal prose",
+      "tip": "Set `maxProseWidth` to cap how wide Claude's responses run in a wide terminal. Code blocks still span the full width.",
+      "when": "You work on a wide or ultrawide monitor.",
+      "done": "`maxProseWidth` is set in any settings file.",
+      "snippet": {
+        "file": "~/.claude/settings.json",
+        "lang": "json",
+        "code": [
+          "{",
+          "  \"maxProseWidth\": 100",
+          "}"
+        ]
+      },
+      "added": "2026-09-27"
     },
     {
       "id": "session-brief",
