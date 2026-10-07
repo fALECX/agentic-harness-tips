@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-25",
+  "updated": "2026-10-07",
   "trackedClaudeCode": "2.1.282",
   "repo": "fALECX/agentic-harness-tips",
   "categories": [
@@ -331,6 +331,25 @@
         ]
       },
       "added": "2026-09-25"
+    },
+    {
+      "id": "compact",
+      "category": "context",
+      "title": "Compact before it compresses itself",
+      "tip": "`/compact keep <what matters>` summarizes the window on your terms. Control what survives the summary instead of letting auto-compact decide.",
+      "when": "A task is winding down, or the context bar is over half full.",
+      "done": "Habit, nothing to detect.",
+      "card": {
+        "title": "claude",
+        "lang": "shell",
+        "lines": [
+          "> /compact keep the API decisions and open questions",
+          "",
+          "# summarizes on your terms before auto-compact kicks in",
+          "# context bar: /context shows what fills the window"
+        ]
+      },
+      "added": "2026-10-07"
     },
     {
       "id": "skills",

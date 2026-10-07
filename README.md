@@ -2,7 +2,7 @@
 
 What I set up in Claude Code besides prompting. One tip, one picture, one snippet.
 
-<sub>23 tips · tracked through Claude Code 2.1.282 · updated 2026-09-25</sub>
+<sub>24 tips · tracked through Claude Code 2.1.282 · updated 2026-10-07</sub>
 
 **Check your own repo against this list:**
 
@@ -31,6 +31,7 @@ What I set up in Claude Code besides prompting. One tip, one picture, one snippe
 | [One instruction file for every agent](#agents-md) | You or your teammates use more than one coding agent. |
 | [Keep instructions to one screen](#lean-instructions) | `CLAUDE.md` or `AGENTS.md` is over ~100 lines, or is untouched `/init` output. |
 | [Guard the context window](#context-hygiene) | Long sessions, or answers getting worse. |
+| [Compact before it compresses itself](#compact) | A task is winding down, or the context bar is over half full. |
 | [Prompted it twice? Make it a skill](#skills) | Releases, changelogs, review checklists, deploys. |
 | **Workflow** | |
 | [Parallel sessions, zero collisions](#worktrees) | One task is running and the next one is ready. |
@@ -337,6 +338,14 @@ docs/architecture.md · docs/testing.md
 <img src="assets/context-hygiene.svg" width="760" alt="Guard the context window">
 
 **When:** Long sessions, or answers getting worse.
+
+<a id="compact"></a>
+
+### Compact before it compresses itself
+
+`/compact keep <what matters>` summarizes the window on your terms. Control what survives the summary instead of letting auto-compact decide.
+
+**When:** A task is winding down, or the context bar is over half full.
 
 <a id="skills"></a>
 
